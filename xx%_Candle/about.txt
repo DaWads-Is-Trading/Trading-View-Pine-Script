@@ -1,0 +1,8 @@
+Tips Tricks and Techniques.
+
+Indicators:
+
+Orange - Potential move
+Gren = long
+Red = short
+Grey = closed - did not work out
