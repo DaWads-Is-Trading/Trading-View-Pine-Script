@@ -1,0 +1,38 @@
+//@version=4
+study(title="TTT: EMA/ADX", shorttitle="EMA/ADX", overlay=true)
+
+// ADX
+len = input(title="ADX Length", type=input.integer, defval=14)
+th = input(title="Threshold", type=input.integer, defval=20)
+true_range = max(max(high - low, abs(high - nz(close[1]))), abs(low - nz(close[1])))
+directional_movement_plus = high - nz(high[1]) > nz(low[1]) - low ? max(high - nz(high[1]), 0) : 0
+directional_movement_minus = nz(low[1]) - low > high - nz(high[1]) ? max(nz(low[1]) - low, 0) : 0
+smoothed_true_range = 0.0
+smoothed_true_range := nz(smoothed_true_range[1]) - nz(smoothed_true_range[1]) / len + true_range
+smoothed_directional_movement_plus = 0.0
+smoothed_directional_movement_plus := nz(smoothed_directional_movement_plus[1]) - 
+   nz(smoothed_directional_movement_plus[1]) / len + directional_movement_plus
+smoothed_directional_movement_minus = 0.0
+smoothed_directional_movement_minus := nz(smoothed_directional_movement_minus[1]) - 
+   nz(smoothed_directional_movement_minus[1]) / len + directional_movement_minus
+DI_plus = smoothed_directional_movement_plus / smoothed_true_range * 100
+DI_minus = smoothed_directional_movement_minus / smoothed_true_range * 100
+DX = abs(DI_plus - DI_minus) / (DI_plus + DI_minus) * 100
+ADX = sma(DX, len)
+
+// EMA 
+len2 = input(20, minval=1, title="EMA Length")
+src = input(close, title="Source")
+offset = input(title="Offset", type=input.integer, defval=0, minval=-500, maxval=500)
+ema_line = ema(src, len2)
+
+// check if the ADX is above 30
+adx_above = ADX >= 30 ? true : false
+ema_line_color = adx_above ? color.lime : color.gray
+
+// plot the EMA line 
+plot(ema_line, title="EMA/ADX", color=ema_line_color, offset=offset)
+
+// color background
+bg_color  = adx_above ? color.new(color.yellow, 95) : color.new(color.white, 100)
+bgcolor(bg_color) 
