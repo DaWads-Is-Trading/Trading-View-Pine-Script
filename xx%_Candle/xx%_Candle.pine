@@ -1,0 +1,34 @@
+//@version=4
+study(title="TTT: 25%_Candle", shorttitle="25%_Candle", overlay=true)
+
+// find the range for 25% of the total spread
+quarterRange = ((high - low) / 100) * input(title="Percentage Threshold",defval = 25, options=[25,38.2,50])
+
+// Find upper/lower thresholds for the range boundary
+highThreshold = (high - quarterRange)
+lowThreshold = (low + quarterRange)
+
+// find long setup
+long_breakout = 0
+open_above = open > highThreshold
+close_above = close > highThreshold
+open_and_close_above = open_above and close_above ? 1 : 0
+
+// find short setup
+short_breakout = 0
+open_below = open < lowThreshold
+close_below = close < lowThreshold
+open_and_close_below = open_below and close_below ? 1 : 0
+
+plotshape(open_and_close_above, style=shape.circle, color=color.orange, size=size.tiny)
+plotshape(open_and_close_below, style=shape.circle, color=color.orange, size=size.tiny)
+
+if(open_and_close_above[1] == 1)
+    if(close > high[1])
+        long_breakout := 1
+plotshape(long_breakout, style=shape.triangleup, color=color.lime, size=size.tiny)
+
+if(open_and_close_below[1] == 1)
+    if(close < low[1])
+        short_breakout := 1
+plotshape(short_breakout, style=shape.triangledown, color=color.red, size=size.tiny)
