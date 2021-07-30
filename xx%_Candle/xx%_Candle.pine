@@ -10,25 +10,41 @@ lowThreshold = (low + quarterRange)
 
 // find long setup
 long_breakout = 0
+end_long_breakout = 0
 open_above = open > highThreshold
 close_above = close > highThreshold
 open_and_close_above = open_above and close_above ? 1 : 0
 
 // find short setup
 short_breakout = 0
+end_short_breakout = 0
 open_below = open < lowThreshold
 close_below = close < lowThreshold
 open_and_close_below = open_below and close_below ? 1 : 0
 
-plotshape(open_and_close_above, style=shape.circle, color=color.orange, size=size.tiny)
-plotshape(open_and_close_below, style=shape.circle, color=color.orange, size=size.tiny)
+plotshape(open_and_close_above, style=shape.diamond, color=color.orange, size=size.tiny)
+plotshape(open_and_close_below, style=shape.diamond, color=color.orange, size=size.tiny)
 
 if(open_and_close_above[1] == 1)
-    if(close > high[1])
+    if(close >= high[1])
         long_breakout := 1
+        alert("Going long...", alert.freq_once_per_bar)
+    
+    if(close < high[1])
+        end_long_breakout := 1
+        
+plotshape(long_breakout, style=shape.diamond, offset=-1, color=color.lime, size=size.tiny)
 plotshape(long_breakout, style=shape.triangleup, color=color.lime, size=size.tiny)
-
+plotshape(end_long_breakout, style=shape.diamond, offset=-1, color=color.gray, size=size.tiny)
 if(open_and_close_below[1] == 1)
-    if(close < low[1])
+    if(close <= low[1])
         short_breakout := 1
+        alert("Going short...", alert.freq_once_per_bar)
+            
+    if(close > low[1])
+        end_short_breakout := 1
+        
+plotshape(short_breakout, style=shape.diamond,  offset=-1, color=color.red, size=size.tiny)
 plotshape(short_breakout, style=shape.triangledown, color=color.red, size=size.tiny)
+plotshape(end_short_breakout, style=shape.diamond,  offset=-1, color=color.gray, size=size.tiny)
+
